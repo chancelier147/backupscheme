@@ -30,23 +30,19 @@ We have two scripts and two configuration files
 
 Here are its contents :
 ```
-**#!/bin/bash**
+#!/bin/bash
 
-**#Local backup location**
+#Local backup location
+lbackuploc=/BACKUP
 
-**lbackuploc=/BACKUP**
+#User backup
+backup_user=`cat BACKUP_USER`
 
-**#User backup**
+#Hostname
+hostname=`hostname -s`
 
-**backup\_user=`cat BACKUP_USER`**
-
-**#Hostname**
-
-**hostname=`hostname -s`**
-
-**#rsync command**
-
-**rsync -avz --delete-excluded --exclude-from=BACKUP\_FILTER $backup\_user $lbackuploc/$hostname | mail -s &quot;Backup DONE for $hostname&quot; root**
+#rsync command 
+rsync -avz --delete-excluded --exclude-from=BACKUP_FILTER $backup_user $lbackuploc/$hostname | mail -s "Backup DONE for $hostname" root
 ```
 
 In our script we also use the mailutils program to send backup information to the root user.
@@ -55,7 +51,7 @@ In our script we also use the mailutils program to send backup information to th
 
 Here is its content, here you replace **user** by your username :
 ```
-**/home/user/**
+/home/user/
 ```
 This configuration file will contain the list of files and directories that will be saved in the /BACKUP directory.
 
@@ -65,9 +61,8 @@ This file will contain the list of files or regular expression patterns that you
 
 Here are its contents :
 ```
-**\*.ogg**
-
-**\*.iso**
+*.ogg
+*.iso
 ```
 **4. compress-backup.sh**  **rights and permissions 700** ** (-rwx------ 1 root root)**
 
@@ -75,35 +70,28 @@ This script allows to compress files saved in bzip2 format.The compressed files 
 
 Here are its contents :
 ```
-**#!/bin/sh**
+#!/bin/sh
 
-**#Hostname**
+#Hostname
+#hostname=`hostname -s`
 
-**#hostname=`hostname -s`**
+#Date
+date=`date +%Y.%m.%d`
 
-**#Date**
+# compress latest backup to archive
+cd /BACKUP/;tar jcf archive_`hostname -s`_$date.tar.bz2 `hostname -s`/; chown root:root archive_*
 
-**date=`date +%Y.%m.%d`**
+# delete old archives after 180 days
+find /BACKUP/archive_* -type f -mtime +180 -exec rm  {} \;
 
-**# compress latest backup to archive**
-
-**cd /BACKUP/;tar jcf archive\_`hostname -s`\_$date.tar.bz2 `hostname -s`/; chown root:root archive\_\***
-
-**# delete old archives after 180 days**
-
-**find /BACKUP/archive\_\* -type f -mtime +180 -exec rm  {} \;**
-
-**# time stamp when the backup scripts completes**
-
-**logger &quot;BACKUP\_Compress Completed for `hostname -s`&quot;**
+# time stamp when the backup scripts completes
+logger "BACKUP_Compress Completed for `hostname -s`"
 ```
-
 
 **AUTOMATING BACKUPS WITH CRON**
 
 Here we set up automatic backup and compression every day at 3 a.m. and 5 a.m. respectively.
 ```
-0 3 \* \* \* /opt/scripts/master-backup.sh
-
-0 5 \* \* \* /opt/scripts/compress-backup.sh
+0 3 * * * /opt/scripts/master-backup.sh
+0 5 * * * /opt/scripts/compress-backup.sh
 ```
