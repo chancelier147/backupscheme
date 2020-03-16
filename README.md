@@ -29,7 +29,7 @@ We have two scripts and two configuration files
 **1. master-backup.sh**  **rights and permissions 700** ** (-rwx------ 1 root root)  **
 
 Here are its contents :
-
+```
 **#!/bin/bash**
 
 **#Local backup location**
@@ -47,15 +47,16 @@ Here are its contents :
 **#rsync command**
 
 **rsync -avz --delete-excluded --exclude-from=BACKUP\_FILTER $backup\_user $lbackuploc/$hostname | mail -s &quot;Backup DONE for $hostname&quot; root**
+```
 
 In our script we also use the mailutils program to send backup information to the root user.
 
 **2. BACKUP\_USER**  **rights and permissions 600** ** (-rw------- 1 user  user)**
 
 Here is its content, here you replace **user** by your username :
-
+```
 **/home/user/**
-
+```
 This configuration file will contain the list of files and directories that will be saved in the /BACKUP directory.
 
 **3. BACKUP\_FILTER**  **rights and permissions 600** ** (-rw------- 1 user  user)**
@@ -63,17 +64,17 @@ This configuration file will contain the list of files and directories that will
 This file will contain the list of files or regular expression patterns that you do not want to save.
 
 Here are its contents :
-
+```
 **\*.ogg**
 
 **\*.iso**
-
+```
 **4. compress-backup.sh**  **rights and permissions 700** ** (-rwx------ 1 root root)**
 
 This script allows to compress files saved in bzip2 format.The compressed files are named using the pattern &quot;archive\_&quot;, the hostname, today&#39;s date, and end with .tar.bz2 and saved in /BACKUP. The old archive files will be deleted with the &quot;find&quot; command if they are older than 180 days.
 
 Here are its contents :
-
+```
 **#!/bin/sh**
 
 **#Hostname**
@@ -95,13 +96,14 @@ Here are its contents :
 **# time stamp when the backup scripts completes**
 
 **logger &quot;BACKUP\_Compress Completed for `hostname -s`&quot;**
-
+```
 
 
 **AUTOMATING BACKUPS WITH CRON**
 
-Here we configure the backup automatically every day at 3am and the compression at 5am.
-
+Here we set up automatic backup and compression every day at 3 a.m. and 5 a.m. respectively.
+```
 0 3 \* \* \* /opt/scripts/master-backup.sh
 
 0 5 \* \* \* /opt/scripts/compress-backup.sh
+```
