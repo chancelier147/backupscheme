@@ -50,7 +50,7 @@ Here are its contents :
 
 In our script we also use the mailutils program to send backup information to the root user.
 
-**2. BACKUP\_USER**
+**2. BACKUP\_USER**  **rights and permissions 600** ** (-rw------- 1 user  user)**
 
 Here is its content, here you replace **user** by your username :
 
@@ -58,7 +58,7 @@ Here is its content, here you replace **user** by your username :
 
 This configuration file will contain the list of files and directories that will be saved in the /BACKUP directory.
 
-**3. BACKUP\_FILTER**
+**3. BACKUP\_FILTER**  **rights and permissions 600** ** (-rw------- 1 user  user)**
 
 This file will contain the list of files or regular expression patterns that you do not want to save.
 
@@ -68,7 +68,7 @@ Here are its contents :
 
 **\*.iso**
 
-**4. compress-backup.sh**
+**4. compress-backup.sh**  **rights and permissions 700** ** (-rwx------ 1 root root)**
 
 This script allows to compress files saved in bzip2 format.The compressed files are named using the pattern &quot;archive\_&quot;, the hostname, today&#39;s date, and end with .tar.bz2 and saved in /BACKUP. The old archive files will be deleted with the &quot;find&quot; command if they are older than 180 days.
 
